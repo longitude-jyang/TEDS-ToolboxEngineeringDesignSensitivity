@@ -32,7 +32,7 @@
     % options for Monte Carlo and Sensivity analysis 
 
     Opts.nSampMC = 2000;    % number of samples for MC 
-    Ny = 30;              % length y vector for cdf and pdf estimation 
+    Ny = 30;              % length y vector pdf estimation (histogram approach)
     isNorm = 1;           % choose to normalise Fisher matrix (default == 1 for proportional normalization), 
                           %  2 for mean/std normalization,3 for std/std normalization 
     
