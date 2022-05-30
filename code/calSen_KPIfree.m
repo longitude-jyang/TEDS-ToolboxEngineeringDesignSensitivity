@@ -7,9 +7,23 @@
 %   - D_e  :  eigenvalues
 
 
-function [yjpdf,V_e,D_e] = calSen_KPIfree (y,xS,nPar,Ny,ListPar,parJ,isNorm)
+function [yjpdf,V_e,D_e] = calSen_KPIfree (y,xS,nPar,Ny,ListPar,parJ,isNorm,dummyVar)
+     if nargin <= 7
+        dummyVar = [];
+     end
 
      yjpdf = cal_jpdf_hist (y,xS,Ny); % histogram approach
+
+ 
+     if ~ isempty (dummyVar)
+         % get rid of dummy variables 
+         for ii = dummyVar(1) : dummyVar(end)
+            for jj = 1 :4
+                yjpdf.dp_y{ii,jj} = zeros(size(yjpdf.dp_y{ii,jj}));
+            end
+        
+         end
+     end
 
      % alternatively using CDF approach 
      % yjpdf = cal_pdf (y,xS,nPar);   % 1-D 

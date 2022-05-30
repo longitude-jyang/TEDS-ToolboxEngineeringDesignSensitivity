@@ -9,6 +9,10 @@
 % 04/05/2021 @ Franklin Court, Cambridge  [J Yang] --> add case for Riser 
 
 
+% Notes: to run the offshore example cases, please download the CHAOS code
+% from the repository 'https://github.com/longitude-jyang/hydro-suite', where the blackbox h
+% function refers to. 
+
 % -------------------------------------------------------------------------
 % (0)    
 % -------------------------------------------------------------------------
@@ -18,7 +22,6 @@
    
    % --------------------------------------------
    %  initialise the black box function h 
-
    selpath_hfunction = uigetdir([],'Select folder for h-functions:'); % select the directory for the h functions 
 
 

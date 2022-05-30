@@ -1,8 +1,8 @@
 function [ListPar,J] = parList(Opts,RandV,isNorm)
 
+% 05/05/2022 @ Franklin Court, Cambridge  [J Yang] --> add Gamma distribution 
+
 % % assign options
-
-
     dist=Opts.distType;
 
     nVar = RandV.nVar;
@@ -15,7 +15,7 @@ function [ListPar,J] = parList(Opts,RandV,isNorm)
 
     switch dist
         case {'Normal'}
-            distType = ones(nVar,1);
+            distType = ones(nVar,1);  % No.1
             parA = vNominal;
             parB = vNominal.*CoV; 
             parC = NaN(nVar,1);
@@ -23,8 +23,8 @@ function [ListPar,J] = parList(Opts,RandV,isNorm)
 
             
 
-        case {'Lognormal'}
-            distType = ones(nVar,1)*2;
+        case {'Lognormal'} 
+            distType = ones(nVar,1)*2;  % No.2 
 
             ParMean = vNominal; 
             ParStd = vNominal.*CoV; 
@@ -40,6 +40,20 @@ function [ListPar,J] = parList(Opts,RandV,isNorm)
             if isNorm == 2 || isNorm ==3 % if mean/std normalization, need to do re-parametrization 
                 J = getJ (ParMean,ParStd,nVar,dist); 
             end
+
+        case {'Gamma'}
+            distType = ones(nVar,1)*3;  % No.3
+
+            ParMean = vNominal; 
+            ParStd = vNominal.*CoV; 
+
+            k      = (ParMean./ParStd).^2 ; % shape parameter
+            theta  = ParStd.^2./ParMean;  % scale parameter
+
+            parA = k;
+            parB = theta; 
+            parC = NaN(nVar,1);
+            parD = NaN(nVar,1);    
 
     end
 

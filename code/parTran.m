@@ -10,7 +10,7 @@ function  Fn = parTran(Fraw, ListPar,parJ,isNorm)
 
 
    % reparameterization to get back to mean and std, using Jacobian matrix 
-   % in case of Gaussian, parJ is identify matrix 
+   % in case of Gaussian, parJ is identity matrix 
     Fn = parJ.'*Fraw*parJ;  
     
    % normalization 
@@ -36,14 +36,10 @@ function  Fn = parTran(Fraw, ListPar,parJ,isNorm)
        
        parMean = ListPar (:,2); % mean 
        parStd  = parMean.*ListPar (:,3); % std
-
-        b_v = diag([parStd;parStd]); % b vector --> diagonal matrix 
-
-%          b_v = diag([parMean;parMean]); % b vector --> diagonal matrix 
         
-        
-        Fn = b_v*Fn*b_v; % normalization 
-       
+       b_v = diag([parStd;parStd]); % b vector --> diagonal matrix 
+    
+       Fn = b_v*Fn*b_v; % normalization        
        
    end
 

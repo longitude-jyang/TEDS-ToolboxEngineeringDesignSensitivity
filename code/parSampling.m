@@ -1,4 +1,4 @@
-function [xS,ListPar] = parSampling(ListPar, nPar,nS)
+function [xS,ListPar,ParSen] = parSampling(ListPar, nPar,nS)
 
 % Sample of parameter list: (in columns)
 % Name, NominalValue, Random, Distribution, A para, B para, C para, D para 
@@ -18,6 +18,8 @@ xS.senB=zeros(nS,nPar);
 xS.senC=zeros(nS,nPar);
 xS.senD=zeros(nS,nPar);
 
+ParSen = cell(nPar,2);
+
     for ii=1:nPar
         Par=ListPar(ii,:);
         
@@ -29,15 +31,13 @@ xS.senD=zeros(nS,nPar);
             dist='Lognormal';
             
             samp= random(dist, Par(5),Par(6),  [1 nS]);   
+
+        elseif Par(4)==3 
+            dist='Gamma';
+            
+            samp= random(dist, Par(5),Par(6),  [1 nS]); % shape, scale   
             
         else
-%             a=Par(2)-Par(2)*1e-6;                                           % <----- give a delta-appro band (1e-6 here)
-%             b=Par(2)+Par(2)*1e-6;
-%             dist='Uniform';
-%             samp= random(dist, a, b ,[1 nS]);
-%             
-%             ListPar(ii,5)=a;                       % update with delta bound 
-%             ListPar(ii,6)=b;
             
             dist='Normal';
             mu=Par(2);
@@ -48,11 +48,7 @@ xS.senD=zeros(nS,nPar);
             
             Par(5) = mu;
             Par(6) = st; 
-            
-              
 
-
-             
         end
 
 
@@ -80,12 +76,17 @@ xS.senD=zeros(nS,nPar);
                 senC = NaN(1,nS);
                 senD = NaN(1,nS);
 
-             case {'uniform', 'Uniform'}
-                % Analytical differentiation for the uniform distribution
-                senA = (1/(b-a))*(samp~=0);
-                senB= -(1/(b-a))*(samp~=0);
+           case {'gamma', 'Gamma'}
+                k = Par(5);
+                theta = Par(6);
+
+                % Analytical differentiation for the normal distribution
+                senA = log(samp/theta) - psi(k); % psi is digamma function 
+                senB = -k/theta + samp/theta^2 ;    
                 senC = NaN(1,nS);
                 senD = NaN(1,nS);
+
+
         end
 
         xS.samp(:,ii) = samp.';
@@ -93,5 +94,8 @@ xS.senD=zeros(nS,nPar);
         xS.senB(:,ii) = senB.';
         xS.senC(:,ii) = senC.';
         xS.senD(:,ii) = senD.';
+
+        ParSen{ii,1} = senA.';
+        ParSen{ii,2} = senB.';
 
     end
